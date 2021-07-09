@@ -327,7 +327,7 @@ var CBIWifiFrequencyValue = form.Value.extend({
 					band = '5g';
 				else if (data[1][i].mhz >= 5925 && data[1][i].mhz <= 7125)
 					band = '6g';
-				else if (data[1][i].mhz >= 58329 && data[1][i].mhz <= 69120)
+				else if (data[1][i].mhz >= 58320 && data[1][i].mhz <= 69120)
 					band = '60g';
 				else
 					continue;
@@ -375,7 +375,8 @@ var CBIWifiFrequencyValue = form.Value.extend({
 			this.bands = {
 				'': [
 					'2g', '2.4 GHz', this.channels['2g'].length > 3,
-					'5g', '5 GHz', this.channels['5g'].length > 3
+					'5g', '5 GHz', this.channels['5g'].length > 3,
+					'60g', '60 GHz', this.channels['60g'].length > 3
 				],
 				'n': [
 					'2g', '2.4 GHz', this.channels['2g'].length > 3,
@@ -465,7 +466,9 @@ var CBIWifiFrequencyValue = form.Value.extend({
 		if (hwval != null) {
 			this.useBandOption = false;
 
-			if (/a/.test(hwval))
+			if (hwval == '11ad')
+				band.value = '60g';
+			else if (/a/.test(hwval))
 				band.value = '5g';
 			else
 				band.value = '2g';
@@ -554,7 +557,7 @@ var CBIWifiFrequencyValue = form.Value.extend({
 		if (this.useBandOption)
 			uci.set('wireless', section_id, 'band', value[1]);
 		else
-			uci.set('wireless', section_id, 'hwmode', (value[1] == '2g') ? '11g' : '11a');
+			uci.set('wireless', section_id, 'hwmode', (value[1] == '2g') ? '11g' : (value[1] == '60g') ? '11ad' : '11a');
 
 		uci.set('wireless', section_id, 'channel', value[2]);
 	}
